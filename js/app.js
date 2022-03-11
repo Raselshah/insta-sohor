@@ -17,15 +17,22 @@ const isLiked = (id) => {
 
 const addToLiked = (id) => {
   likedPostsId.push(id); //replace plus to push(bug)
-  showPosts(posts);
+  const currentPostAdding = deletePostsRemoveHomeUI(posts);
+  showPosts(currentPostAdding);
+};
+
+// Data will no longer appear after the deletion period
+const deletePostsRemoveHomeUI = (filterArray) => {
+  const remainingPost = filterArray.filter(
+    (post) => !reportedPostsId.includes(post.id)
+  );
+  return remainingPost;
 };
 
 const reportPost = (id) => {
   reportedPostsId.push(id);
-  const remainingPosts = posts.filter(
-    (post) => !reportedPostsId.includes(post.id)
-  );
-  showPosts(remainingPosts);
+  const currentPostReporting = deletePostsRemoveHomeUI(posts);
+  showPosts(currentPostReporting);
 };
 
 const displayContent = (text) => {
@@ -39,17 +46,20 @@ const switchTab = (id) => {
     document.getElementById("posts").style.display = "grid";
     document.getElementById("liked").style.display = "none";
     document.getElementById("reported").style.display = "none";
+    hideQuestion(true);
   } else if (id === "liked") {
     document.getElementById("liked").style.display = "block";
     document.getElementById("posts").style.display = "none";
     document.getElementById("reported").style.display = "none";
 
+    hideQuestion(false);
     displayLikedPosts();
   } else {
     document.getElementById("reported").style.display = "block";
     document.getElementById("posts").style.display = "none";
     document.getElementById("liked").style.display = "none";
 
+    hideQuestion(false);
     displayReportedPosts();
   }
 };
@@ -179,4 +189,13 @@ const loadPosts = async () => {
   showPosts(posts);
 };
 
+// question display show issue fixed
+const hideQuestion = (condition) => {
+  // console.log(typeof condition);
+  if (condition === false) {
+    return (document.getElementById("displayShow").style.display = "none");
+  } else {
+    return (document.getElementById("displayShow").style.display = "block");
+  }
+};
 loadPosts();
